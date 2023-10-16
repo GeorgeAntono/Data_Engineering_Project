@@ -11,7 +11,7 @@ COPY . .
 # Expose the port that our app runs in
 EXPOSE 5000
 # Environment Variables
-ENV PREDICTOR_API=http://predictor-api-server:5000/diabetes_predictor/
+ENV PREDICTOR_API=http://predictor-api-server:5000/churn_predictor/
 #Add some meta data if necessary
 LABEL diabetes.predictor.api="0.0.1-beta"
 # Run our App
