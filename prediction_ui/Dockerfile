@@ -15,6 +15,6 @@ ENV PREDICTOR_API=http://predictor-api-server:5000/churn_predictor/
 #Add some meta data if necessary
 LABEL diabetes.predictor.api="0.0.1-beta"
 # Run our App
-CMD ["python3","app.py"]
+CMD ["python3","First_prediction_UI.py"]
 # We can also use an ENTRYPOINT and a CMD
 # Run our App
