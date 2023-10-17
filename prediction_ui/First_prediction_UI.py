@@ -45,13 +45,6 @@ def check_churn():
                                prediction_variable=prediction_value)
         # we will replace this simple (and inaccurate logic) with a prediction from a machine learning model in a
         # future in a future lab
-        if EstimatedSalary > 12000:
-            prediction_value = True
-        else:
-            prediction_value = False
-
-        return render_template("response_page.html",
-                               prediction_variable=prediction_value)
 
 
     else:
