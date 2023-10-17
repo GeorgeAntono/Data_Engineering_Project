@@ -18,7 +18,7 @@ class ChurnPredictor:
         if self.model is None:
             try:
                 model_repo = os.environ['MODEL_REPO']
-                file_path = os.path.join(model_repo, "model.h5")
+                file_path = os.path.join(model_repo, "model.sav")
                 self.model = load_model(file_path)
             except KeyError:
                 print("MODEL_REPO is undefined")
