@@ -1,7 +1,6 @@
 flask
 pandas
-keras
-tensorflow
+scikit-learn
 numpy==1.25.2
 h5py
 six

@@ -3,7 +3,6 @@ import os
 
 import pandas as pd
 from flask import jsonify
-from keras.models import load_model
 import logging
 from io import StringIO
 import pickle
@@ -18,11 +17,11 @@ class ChurnPredictor:
         if self.model is None:
             try:
                 model_repo = os.environ['MODEL_REPO']
-                file_path = os.path.join(model_repo, "model.sav")
-                self.model = load_model(file_path)
+                file_path = os.path.join(model_repo, "model.pkl")
+                self.model = pickle.load_model(open(file_path,'rb'))
             except KeyError:
                 print("MODEL_REPO is undefined")
-                self.model = pickle.load(open('model.sav', 'rb'))
+                self.model = pickle.load(open('model.pkl', 'rb'))
 
         df = pd.read_json(StringIO(json.dumps(prediction_input)), orient='records')
         y_pred = self.model.predict(df)
