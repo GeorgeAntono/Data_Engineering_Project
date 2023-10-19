@@ -21,7 +21,7 @@ class ChurnPredictor:
             try:
                 model_repo = os.environ['MODEL_REPO']
                 file_path = os.path.join(model_repo, "model.pkl")
-                self.model = pickle.load_model(open(file_path,'rb'))
+                self.model = pickle.load(open(file_path,'rb'))
             except KeyError:
                 print("MODEL_REPO is undefined")
                 self.model = pickle.load(open('model.pkl', 'rb'))
