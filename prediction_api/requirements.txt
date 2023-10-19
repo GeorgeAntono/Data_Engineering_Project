@@ -1,8 +1,4 @@
 flask
 pandas
-keras
-tensorflow
-numpy==1.25.2
-h5py
-six
-pickle
+scikit-learn
+pytest
