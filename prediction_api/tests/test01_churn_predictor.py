@@ -2,7 +2,9 @@ import os
 
 import pandas as pd
 
-import churn_predictor
+#ADDED - from prediction_api
+from prediction_api import churn_predictor
+
 
 
 class TestChurnPredictor:
@@ -14,6 +16,6 @@ class TestChurnPredictor:
             data = pd.read_json(json_file)
         cp = churn_predictor.ChurnPredictor(model_file=test_model_file)
         status = cp.predict_single_record(data)
-       
+
         assert bool(status[0]) is not None
         assert bool(status[0]) is False
