@@ -17,3 +17,4 @@ class TestChurnPredictor:
        
         assert bool(status[0]) is not None
         assert bool(status[0]) is False
+        
