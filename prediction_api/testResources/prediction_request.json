@@ -1,8 +1,8 @@
 [
   {
     "CreditScore": 619,
-    "Geography": 1,
-    "Gender": 1,
+    "Geography": 0,
+    "Gender": 0,
     "Age": 42,
     "Tenure": 2,
     "Balance": 0,
