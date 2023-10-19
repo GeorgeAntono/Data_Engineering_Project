@@ -90,7 +90,7 @@
       "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
       "args": [
         "-c",
-        "gcloud run deploy prediction-ui --image us-central1-docker.pkg.dev/degroup11/grouprepo/prediction_ui:0.0.1 --set-env-vars PREDICTOR_API=$(cat /workspace/api_url.text)/diabetes_predictor/ --region us-central1 --platform managed --port 5000 --cpu 2 --memory 4G --allow-unauthenticated"
+        "gcloud run deploy prediction-ui --image us-central1-docker.pkg.dev/degroup11/grouprepo/prediction_ui:0.0.1 --set-env-vars PREDICTOR_API=$(cat /workspace/api_url.text)/churn_predictor/ --region us-central1 --platform managed --port 5000 --cpu 2 --memory 4G --allow-unauthenticated"
       ],
       "waitFor": [
         "api-url-extraction"
