@@ -9,6 +9,14 @@
       ]
     },
     {
+      "name": "python:3.10.8-slim-buster",
+      "entrypoint": "/bin/sh",
+      "args": [
+        "-c",
+        "cd ./prediction_api && cp model.pkl ./testResources && python -m venv .myenv && . .myenv/bin/activate && python -m pip install --upgrade pip && python -m pip install -r requirements_dev.txt && python -m pytest --junitxml=${SHORT_SHA}_test_log.xml ./tests"
+      ]
+    },
+    {
       "name": "gcr.io/cloud-builders/docker",
       "args": [
         "build",
@@ -105,5 +113,13 @@
         "/workspace/api_url.text"
       ]
     }
-  }
+  },
+  "artifacts": {
+      "objects": {
+        "location": "gs://temp_degroup11/",
+        "paths": [
+            "/workspace/${SHORT_SHA}_test_log.xml"
+        ]
+      }
+    }
 }
