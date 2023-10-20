@@ -118,7 +118,7 @@
       "objects": {
         "location": "gs://temp_degroup11/",
         "paths": [
-            "/workspace/${SHORT_SHA}_test_log.xml"
+            "/workspace/prediction_api/${SHORT_SHA}_test_log.xml"
         ]
       }
     }
