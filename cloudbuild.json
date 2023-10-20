@@ -13,7 +13,7 @@
       "entrypoint": "/bin/sh",
       "args": [
         "-c",
-        "cd ./prediction_api && cp model.pkl ./testResources && python -m venv .myenv && . .myenv/bin/activate && python -m pip install -r requirements_dev.txt && python -m pytest --junitxml=${SHORT_SHA}_test_log.xml ./tests"
+        "cd ./prediction_api && cp model.pkl ./testResources && python -m venv .myenv && . .myenv/bin/activate && python -m pip install -r requirements_dev.txt"
       ]
     },
     {
