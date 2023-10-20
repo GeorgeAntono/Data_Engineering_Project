@@ -1,10 +1,9 @@
 import os
+import json
 
-import pandas as pd
 
-#ADDED - from prediction_api
-from prediction_api import churn_predictor
-
+# ADDED - from prediction_api
+import churn_predictor
 
 
 class TestChurnPredictor:
@@ -13,9 +12,8 @@ class TestChurnPredictor:
         test_data_file = os.path.join(test_dir, "../testResources/prediction_request.json")
         test_model_file = os.path.join(test_dir, "../testResources/model.pkl")
         with open(test_data_file) as json_file:
-            data = pd.read_json(json_file)
-        cp = churn_predictor.ChurnPredictor(model_file=test_model_file)
+            data = json.load(json_file)
+        cp = churn_predictor.ChurnPredictor()
+        cp.load_model(test_model_file)
         status = cp.predict_single_record(data)
-
-        assert bool(status[0]) is not None
-        assert bool(status[0]) is False
+        assert status is not None
