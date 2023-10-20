@@ -3,6 +3,7 @@ import os
 from flask import Flask, request
 
 from churn_predictor import ChurnPredictor
+from flask import jsonify
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
