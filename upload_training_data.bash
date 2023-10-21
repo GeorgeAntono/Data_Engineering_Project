@@ -1,4 +1,4 @@
-gsutil cp ../data/* gs://data_degroup11
+gsutil cp data/* gs://data_degroup11
 
 git config --global user.email "georgantonopoulos@hotmail.com"
 git config --global user.name "GeorgeAntono"
