@@ -4,13 +4,77 @@
 #    data_bucket: str
 #    dataset_uri: str
 #    file_name: str
+#    git_repo: str
 #    model_repo: str
 #    model_repo_uri: str
 #    project_id: str
 components:
+  comp-commit-github:
+    executorLabel: exec-commit-github
+    inputDefinitions:
+      parameters:
+        git_repo:
+          parameterType: STRING
+        target_file:
+          parameterType: STRING
+        user_password:
+          parameterType: STRING
+  comp-commit-github-2:
+    executorLabel: exec-commit-github-2
+    inputDefinitions:
+      parameters:
+        git_repo:
+          parameterType: STRING
+        target_file:
+          parameterType: STRING
+        user_password:
+          parameterType: STRING
+  comp-commit-github-3:
+    executorLabel: exec-commit-github-3
+    inputDefinitions:
+      parameters:
+        git_repo:
+          parameterType: STRING
+        target_file:
+          parameterType: STRING
+        user_password:
+          parameterType: STRING
   comp-condition-1:
     dag:
       tasks:
+        commit-github:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-commit-github
+          dependentTasks:
+          - get-git-password-user
+          inputs:
+            parameters:
+              git_repo:
+                componentInputParameter: pipelinechannel--git_repo
+              target_file:
+                runtimeValue:
+                  constant: synchronizer/model_rfc/history.txt
+              user_password:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: get-git-password-user
+          taskInfo:
+            name: commit-github
+        get-git-password-user:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-get-git-password-user
+          dependentTasks:
+          - upload-model-to-gcs
+          inputs:
+            parameters:
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: get-git-password-user
         upload-model-to-gcs:
           cachingOptions:
             enableCache: true
@@ -34,6 +98,8 @@ components:
             schemaTitle: system.Model
             schemaVersion: 0.0.1
       parameters:
+        pipelinechannel--git_repo:
+          parameterType: STRING
         pipelinechannel--model-evaluation-Output:
           parameterType: STRING
         pipelinechannel--model_repo:
@@ -43,6 +109,39 @@ components:
   comp-condition-2:
     dag:
       tasks:
+        commit-github-2:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-commit-github-2
+          dependentTasks:
+          - get-git-password-user-2
+          inputs:
+            parameters:
+              git_repo:
+                componentInputParameter: pipelinechannel--git_repo
+              target_file:
+                runtimeValue:
+                  constant: synchronizer/model_lr/history.txt
+              user_password:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: get-git-password-user-2
+          taskInfo:
+            name: commit-github-2
+        get-git-password-user-2:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-get-git-password-user-2
+          dependentTasks:
+          - upload-model-to-gcs-2
+          inputs:
+            parameters:
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: get-git-password-user-2
         upload-model-to-gcs-2:
           cachingOptions:
             enableCache: true
@@ -66,6 +165,8 @@ components:
             schemaTitle: system.Model
             schemaVersion: 0.0.1
       parameters:
+        pipelinechannel--git_repo:
+          parameterType: STRING
         pipelinechannel--model-evaluation-Output:
           parameterType: STRING
         pipelinechannel--model_repo:
@@ -75,6 +176,39 @@ components:
   comp-condition-3:
     dag:
       tasks:
+        commit-github-3:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-commit-github-3
+          dependentTasks:
+          - get-git-password-user-3
+          inputs:
+            parameters:
+              git_repo:
+                componentInputParameter: pipelinechannel--git_repo
+              target_file:
+                runtimeValue:
+                  constant: synchronizer/model_svc/history.txt
+              user_password:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: get-git-password-user-3
+          taskInfo:
+            name: commit-github-3
+        get-git-password-user-3:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-get-git-password-user-3
+          dependentTasks:
+          - upload-model-to-gcs-3
+          inputs:
+            parameters:
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: get-git-password-user-3
         upload-model-to-gcs-3:
           cachingOptions:
             enableCache: true
@@ -98,6 +232,8 @@ components:
             schemaTitle: system.Model
             schemaVersion: 0.0.1
       parameters:
+        pipelinechannel--git_repo:
+          parameterType: STRING
         pipelinechannel--model-evaluation-Output:
           parameterType: STRING
         pipelinechannel--model_repo:
@@ -146,6 +282,36 @@ components:
           artifactType:
             schemaTitle: system.Dataset
             schemaVersion: 0.0.1
+  comp-get-git-password-user:
+    executorLabel: exec-get-git-password-user
+    inputDefinitions:
+      parameters:
+        project_id:
+          parameterType: STRING
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-get-git-password-user-2:
+    executorLabel: exec-get-git-password-user-2
+    inputDefinitions:
+      parameters:
+        project_id:
+          parameterType: STRING
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-get-git-password-user-3:
+    executorLabel: exec-get-git-password-user-3
+    inputDefinitions:
+      parameters:
+        project_id:
+          parameterType: STRING
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
   comp-model-evaluation:
     executorLabel: exec-model-evaluation
     inputDefinitions:
@@ -269,6 +435,57 @@ components:
           parameterType: STRING
 deploymentSpec:
   executors:
+    exec-commit-github:
+      container:
+        args:
+        - '{{$.inputs.parameters[''user_password'']}}'
+        - '{{$.inputs.parameters[''git_repo'']}}'
+        - '{{$.inputs.parameters[''target_file'']}}'
+        command:
+        - sh
+        - -c
+        - "GURL=\"https://$0@$1\"                            && git clone $GURL  \
+          \                          && cd DE_Group11                            &&\
+          \ echo \"model uploaded\" >> $2                            && git config\
+          \ --global user.email \"testuser@example.com\"                         \
+          \   && git config --global user.name \"Test User\"                     \
+          \       && git commit -am \"model uploaded\"                           \
+          \ && git push $GURL --all\n                            "
+        image: alpine/git:2.40.1
+    exec-commit-github-2:
+      container:
+        args:
+        - '{{$.inputs.parameters[''user_password'']}}'
+        - '{{$.inputs.parameters[''git_repo'']}}'
+        - '{{$.inputs.parameters[''target_file'']}}'
+        command:
+        - sh
+        - -c
+        - "GURL=\"https://$0@$1\"                            && git clone $GURL  \
+          \                          && cd DE_Group11                            &&\
+          \ echo \"model uploaded\" >> $2                            && git config\
+          \ --global user.email \"testuser@example.com\"                         \
+          \   && git config --global user.name \"Test User\"                     \
+          \       && git commit -am \"model uploaded\"                           \
+          \ && git push $GURL --all\n                            "
+        image: alpine/git:2.40.1
+    exec-commit-github-3:
+      container:
+        args:
+        - '{{$.inputs.parameters[''user_password'']}}'
+        - '{{$.inputs.parameters[''git_repo'']}}'
+        - '{{$.inputs.parameters[''target_file'']}}'
+        command:
+        - sh
+        - -c
+        - "GURL=\"https://$0@$1\"                            && git clone $GURL  \
+          \                          && cd DE_Group11                            &&\
+          \ echo \"model uploaded\" >> $2                            && git config\
+          \ --global user.email \"testuser@example.com\"                         \
+          \   && git config --global user.name \"Test User\"                     \
+          \       && git commit -am \"model uploaded\"                           \
+          \ && git push $GURL --all\n                            "
+        image: alpine/git:2.40.1
     exec-download-data:
       container:
         args:
@@ -352,6 +569,138 @@ deploymentSpec:
           \ + \".csv\" , index=False, encoding='utf-8-sig')\n    X_test.to_csv(dataset_test_x.path\
           \ + \".csv\" , index=False, encoding='utf-8-sig')\n    y_test.to_csv(dataset_test_y.path\
           \ + \".csv\" , index=False, encoding='utf-8-sig')\n\n"
+        image: python:3.10.7-slim
+    exec-get-git-password-user:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - get_git_password_user
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-secret-manager'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef get_git_password_user(project_id: str) -> str:  \n\n    from\
+          \ google.cloud import secretmanager\n    import logging \n    import sys\n\
+          \n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n    #\
+          \ ID of the secrets.\n    secret_id_user = \"Github_account_name\"\n   \
+          \ secret_id_pass = \"Github_access_token\"\n\n    # Create the Secret Manager\
+          \ client.\n    client = secretmanager.SecretManagerServiceClient()\n\n \
+          \   # Build the resource name of the secret version.\n    user_resource\
+          \ = f\"projects/{project_id}/secrets/{secret_id_user}/versions/1\"\n\n \
+          \   # Get the secret version.\n    user_response = client.access_secret_version(request={\"\
+          name\": user_resource})    \n   # Get the value of the secret\n    user_payload\
+          \ = user_response.payload.data.decode(\"UTF-8\")\n\n    # Build the resource\
+          \ name of the secret version.\n    pass_resource = f\"projects/{project_id}/secrets/{secret_id_pass}/versions/1\"\
+          \n    # Get the secret version.\n    pass_response = client.access_secret_version(request={\"\
+          name\": pass_resource})\n    pass_payload = pass_response.payload.data.decode(\"\
+          UTF-8\")\n\n    logging.info('Github credential retrieved!')\n    return\
+          \ user_payload + \":\" + pass_payload  # Never print or log this!    \n\n"
+        image: python:3.10.7-slim
+    exec-get-git-password-user-2:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - get_git_password_user
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-secret-manager'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef get_git_password_user(project_id: str) -> str:  \n\n    from\
+          \ google.cloud import secretmanager\n    import logging \n    import sys\n\
+          \n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n    #\
+          \ ID of the secrets.\n    secret_id_user = \"Github_account_name\"\n   \
+          \ secret_id_pass = \"Github_access_token\"\n\n    # Create the Secret Manager\
+          \ client.\n    client = secretmanager.SecretManagerServiceClient()\n\n \
+          \   # Build the resource name of the secret version.\n    user_resource\
+          \ = f\"projects/{project_id}/secrets/{secret_id_user}/versions/1\"\n\n \
+          \   # Get the secret version.\n    user_response = client.access_secret_version(request={\"\
+          name\": user_resource})    \n   # Get the value of the secret\n    user_payload\
+          \ = user_response.payload.data.decode(\"UTF-8\")\n\n    # Build the resource\
+          \ name of the secret version.\n    pass_resource = f\"projects/{project_id}/secrets/{secret_id_pass}/versions/1\"\
+          \n    # Get the secret version.\n    pass_response = client.access_secret_version(request={\"\
+          name\": pass_resource})\n    pass_payload = pass_response.payload.data.decode(\"\
+          UTF-8\")\n\n    logging.info('Github credential retrieved!')\n    return\
+          \ user_payload + \":\" + pass_payload  # Never print or log this!    \n\n"
+        image: python:3.10.7-slim
+    exec-get-git-password-user-3:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - get_git_password_user
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-secret-manager'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef get_git_password_user(project_id: str) -> str:  \n\n    from\
+          \ google.cloud import secretmanager\n    import logging \n    import sys\n\
+          \n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n    #\
+          \ ID of the secrets.\n    secret_id_user = \"Github_account_name\"\n   \
+          \ secret_id_pass = \"Github_access_token\"\n\n    # Create the Secret Manager\
+          \ client.\n    client = secretmanager.SecretManagerServiceClient()\n\n \
+          \   # Build the resource name of the secret version.\n    user_resource\
+          \ = f\"projects/{project_id}/secrets/{secret_id_user}/versions/1\"\n\n \
+          \   # Get the secret version.\n    user_response = client.access_secret_version(request={\"\
+          name\": user_resource})    \n   # Get the value of the secret\n    user_payload\
+          \ = user_response.payload.data.decode(\"UTF-8\")\n\n    # Build the resource\
+          \ name of the secret version.\n    pass_resource = f\"projects/{project_id}/secrets/{secret_id_pass}/versions/1\"\
+          \n    # Get the secret version.\n    pass_response = client.access_secret_version(request={\"\
+          name\": pass_resource})\n    pass_payload = pass_response.payload.data.decode(\"\
+          UTF-8\")\n\n    logging.info('Github credential retrieved!')\n    return\
+          \ user_payload + \":\" + pass_payload  # Never print or log this!    \n\n"
         image: python:3.10.7-slim
     exec-model-evaluation:
       container:
@@ -647,6 +996,8 @@ root:
                 outputArtifactKey: out_model
                 producerTask: train-rfc
           parameters:
+            pipelinechannel--git_repo:
+              componentInputParameter: git_repo
             pipelinechannel--model-evaluation-Output:
               taskOutputParameter:
                 outputParameterKey: Output
@@ -673,6 +1024,8 @@ root:
                 outputArtifactKey: out_model
                 producerTask: train-logistic
           parameters:
+            pipelinechannel--git_repo:
+              componentInputParameter: git_repo
             pipelinechannel--model-evaluation-Output:
               taskOutputParameter:
                 outputParameterKey: Output
@@ -699,6 +1052,8 @@ root:
                 outputArtifactKey: out_model
                 producerTask: train-svm
           parameters:
+            pipelinechannel--git_repo:
+              componentInputParameter: git_repo
             pipelinechannel--model-evaluation-Output:
               taskOutputParameter:
                 outputParameterKey: Output
@@ -840,6 +1195,8 @@ root:
       dataset_uri:
         parameterType: STRING
       file_name:
+        parameterType: STRING
+      git_repo:
         parameterType: STRING
       model_repo:
         parameterType: STRING
