@@ -4,5 +4,6 @@
   "file_name": "churn.csv",
   "dataset_uri":"gs://data_degroup11/churn.csv",
   "model_repo":"models_degroup11",
-  "model_repo_uri":"gs://models_degroup11"
+  "model_repo_uri":"gs://models_degroup11",
+  "git_repo":"github.com/GeorgeAntono/DE_Group11.git"
 }
