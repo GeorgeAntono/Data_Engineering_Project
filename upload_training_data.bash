@@ -1,3 +1,9 @@
+git config --global user.email "georgantonopoulos@hotmail.com"
+git config --global user.name "GeorgeAntono"
+echo "new data" >> data/new_data.txt
+git commit -am "new data"
+git push https://$1:$2@github.com/GeorgeAntono/DE_Group11.git --all
+
 gsutil cp data/* gs://data_degroup11
 
 git config --global user.email "georgantonopoulos@hotmail.com"
