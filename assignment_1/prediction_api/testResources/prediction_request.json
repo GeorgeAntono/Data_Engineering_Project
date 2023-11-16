@@ -1,0 +1,14 @@
+[
+  {
+    "CreditScore": 619,
+    "Geography": 0,
+    "Gender": 0,
+    "Age": 42,
+    "Tenure": 2,
+    "Balance": 0,
+    "NumOfProducts": 1,
+    "HasCrCard": 1,
+    "IsActiveMember": 1,
+    "EstimatedSalary": 101348
+  }
+]

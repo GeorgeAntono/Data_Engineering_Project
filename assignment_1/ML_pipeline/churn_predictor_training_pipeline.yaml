@@ -1,0 +1,1208 @@
+# PIPELINE DEFINITION
+# Name: churn-predictor-training-pipeline
+# Inputs:
+#    data_bucket: str
+#    dataset_uri: str
+#    file_name: str
+#    git_repo: str
+#    model_repo: str
+#    model_repo_uri: str
+#    project_id: str
+components:
+  comp-commit-github:
+    executorLabel: exec-commit-github
+    inputDefinitions:
+      parameters:
+        git_repo:
+          parameterType: STRING
+        target_file:
+          parameterType: STRING
+        user_password:
+          parameterType: STRING
+  comp-commit-github-2:
+    executorLabel: exec-commit-github-2
+    inputDefinitions:
+      parameters:
+        git_repo:
+          parameterType: STRING
+        target_file:
+          parameterType: STRING
+        user_password:
+          parameterType: STRING
+  comp-commit-github-3:
+    executorLabel: exec-commit-github-3
+    inputDefinitions:
+      parameters:
+        git_repo:
+          parameterType: STRING
+        target_file:
+          parameterType: STRING
+        user_password:
+          parameterType: STRING
+  comp-condition-1:
+    dag:
+      tasks:
+        commit-github:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-commit-github
+          dependentTasks:
+          - get-git-password-user
+          inputs:
+            parameters:
+              git_repo:
+                componentInputParameter: pipelinechannel--git_repo
+              target_file:
+                runtimeValue:
+                  constant: synchronizer/model_rfc/history.txt
+              user_password:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: get-git-password-user
+          taskInfo:
+            name: commit-github
+        get-git-password-user:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-get-git-password-user
+          dependentTasks:
+          - upload-model-to-gcs
+          inputs:
+            parameters:
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: get-git-password-user
+        upload-model-to-gcs:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-upload-model-to-gcs
+          inputs:
+            artifacts:
+              model:
+                componentInputArtifact: pipelinechannel--train-rfc-out_model
+            parameters:
+              model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: upload-model-to-gcs
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--train-rfc-out_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--git_repo:
+          parameterType: STRING
+        pipelinechannel--model-evaluation-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-2:
+    dag:
+      tasks:
+        commit-github-2:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-commit-github-2
+          dependentTasks:
+          - get-git-password-user-2
+          inputs:
+            parameters:
+              git_repo:
+                componentInputParameter: pipelinechannel--git_repo
+              target_file:
+                runtimeValue:
+                  constant: synchronizer/model_lr/history.txt
+              user_password:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: get-git-password-user-2
+          taskInfo:
+            name: commit-github-2
+        get-git-password-user-2:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-get-git-password-user-2
+          dependentTasks:
+          - upload-model-to-gcs-2
+          inputs:
+            parameters:
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: get-git-password-user-2
+        upload-model-to-gcs-2:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-upload-model-to-gcs-2
+          inputs:
+            artifacts:
+              model:
+                componentInputArtifact: pipelinechannel--train-logistic-out_model
+            parameters:
+              model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: upload-model-to-gcs-2
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--train-logistic-out_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--git_repo:
+          parameterType: STRING
+        pipelinechannel--model-evaluation-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-condition-3:
+    dag:
+      tasks:
+        commit-github-3:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-commit-github-3
+          dependentTasks:
+          - get-git-password-user-3
+          inputs:
+            parameters:
+              git_repo:
+                componentInputParameter: pipelinechannel--git_repo
+              target_file:
+                runtimeValue:
+                  constant: synchronizer/model_svc/history.txt
+              user_password:
+                taskOutputParameter:
+                  outputParameterKey: Output
+                  producerTask: get-git-password-user-3
+          taskInfo:
+            name: commit-github-3
+        get-git-password-user-3:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-get-git-password-user-3
+          dependentTasks:
+          - upload-model-to-gcs-3
+          inputs:
+            parameters:
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: get-git-password-user-3
+        upload-model-to-gcs-3:
+          cachingOptions:
+            enableCache: true
+          componentRef:
+            name: comp-upload-model-to-gcs-3
+          inputs:
+            artifacts:
+              model:
+                componentInputArtifact: pipelinechannel--train-svm-out_model
+            parameters:
+              model_repo:
+                componentInputParameter: pipelinechannel--model_repo
+              project_id:
+                componentInputParameter: pipelinechannel--project_id
+          taskInfo:
+            name: upload-model-to-gcs-3
+    inputDefinitions:
+      artifacts:
+        pipelinechannel--train-svm-out_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        pipelinechannel--git_repo:
+          parameterType: STRING
+        pipelinechannel--model-evaluation-Output:
+          parameterType: STRING
+        pipelinechannel--model_repo:
+          parameterType: STRING
+        pipelinechannel--project_id:
+          parameterType: STRING
+  comp-download-data:
+    executorLabel: exec-download-data
+    inputDefinitions:
+      parameters:
+        bucket:
+          parameterType: STRING
+        file_name:
+          parameterType: STRING
+        project_id:
+          parameterType: STRING
+    outputDefinitions:
+      artifacts:
+        dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+  comp-feature-selection:
+    executorLabel: exec-feature-selection
+    inputDefinitions:
+      artifacts:
+        dataset:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      artifacts:
+        dataset_test_x:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        dataset_test_y:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        dataset_train_x:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        dataset_train_y:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+  comp-get-git-password-user:
+    executorLabel: exec-get-git-password-user
+    inputDefinitions:
+      parameters:
+        project_id:
+          parameterType: STRING
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-get-git-password-user-2:
+    executorLabel: exec-get-git-password-user-2
+    inputDefinitions:
+      parameters:
+        project_id:
+          parameterType: STRING
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-get-git-password-user-3:
+    executorLabel: exec-get-git-password-user-3
+    inputDefinitions:
+      parameters:
+        project_id:
+          parameterType: STRING
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-model-evaluation:
+    executorLabel: exec-model-evaluation
+    inputDefinitions:
+      artifacts:
+        model_lr:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        model_rfc:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        model_svc:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+        test_set_x:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        test_set_y:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      parameters:
+        Output:
+          parameterType: STRING
+  comp-train-logistic:
+    executorLabel: exec-train-logistic
+    inputDefinitions:
+      artifacts:
+        features_x:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        features_y:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      artifacts:
+        out_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+  comp-train-rfc:
+    executorLabel: exec-train-rfc
+    inputDefinitions:
+      artifacts:
+        features_x:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        features_y:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      artifacts:
+        out_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+  comp-train-svm:
+    executorLabel: exec-train-svm
+    inputDefinitions:
+      artifacts:
+        features_x:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+        features_y:
+          artifactType:
+            schemaTitle: system.Dataset
+            schemaVersion: 0.0.1
+    outputDefinitions:
+      artifacts:
+        out_model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+  comp-upload-model-to-gcs:
+    executorLabel: exec-upload-model-to-gcs
+    inputDefinitions:
+      artifacts:
+        model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        model_repo:
+          parameterType: STRING
+        project_id:
+          parameterType: STRING
+  comp-upload-model-to-gcs-2:
+    executorLabel: exec-upload-model-to-gcs-2
+    inputDefinitions:
+      artifacts:
+        model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        model_repo:
+          parameterType: STRING
+        project_id:
+          parameterType: STRING
+  comp-upload-model-to-gcs-3:
+    executorLabel: exec-upload-model-to-gcs-3
+    inputDefinitions:
+      artifacts:
+        model:
+          artifactType:
+            schemaTitle: system.Model
+            schemaVersion: 0.0.1
+      parameters:
+        model_repo:
+          parameterType: STRING
+        project_id:
+          parameterType: STRING
+deploymentSpec:
+  executors:
+    exec-commit-github:
+      container:
+        args:
+        - '{{$.inputs.parameters[''user_password'']}}'
+        - '{{$.inputs.parameters[''git_repo'']}}'
+        - '{{$.inputs.parameters[''target_file'']}}'
+        command:
+        - sh
+        - -c
+        - "GURL=\"https://$0@$1\"                            && git clone $GURL  \
+          \                          && cd DE_Group11                            &&\
+          \ echo \"model uploaded\" >> $2                            && git config\
+          \ --global user.email \"testuser@example.com\"                         \
+          \   && git config --global user.name \"Test User\"                     \
+          \       && git commit -am \"model uploaded\"                           \
+          \ && git push $GURL --all\n                            "
+        image: alpine/git:2.40.1
+    exec-commit-github-2:
+      container:
+        args:
+        - '{{$.inputs.parameters[''user_password'']}}'
+        - '{{$.inputs.parameters[''git_repo'']}}'
+        - '{{$.inputs.parameters[''target_file'']}}'
+        command:
+        - sh
+        - -c
+        - "GURL=\"https://$0@$1\"                            && git clone $GURL  \
+          \                          && cd DE_Group11                            &&\
+          \ echo \"model uploaded\" >> $2                            && git config\
+          \ --global user.email \"testuser@example.com\"                         \
+          \   && git config --global user.name \"Test User\"                     \
+          \       && git commit -am \"model uploaded\"                           \
+          \ && git push $GURL --all\n                            "
+        image: alpine/git:2.40.1
+    exec-commit-github-3:
+      container:
+        args:
+        - '{{$.inputs.parameters[''user_password'']}}'
+        - '{{$.inputs.parameters[''git_repo'']}}'
+        - '{{$.inputs.parameters[''target_file'']}}'
+        command:
+        - sh
+        - -c
+        - "GURL=\"https://$0@$1\"                            && git clone $GURL  \
+          \                          && cd DE_Group11                            &&\
+          \ echo \"model uploaded\" >> $2                            && git config\
+          \ --global user.email \"testuser@example.com\"                         \
+          \   && git config --global user.name \"Test User\"                     \
+          \       && git commit -am \"model uploaded\"                           \
+          \ && git push $GURL --all\n                            "
+        image: alpine/git:2.40.1
+    exec-download-data:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - download_data
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' 'google-cloud-storage'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef download_data(project_id: str, bucket: str, file_name: str, dataset:\
+          \ Output[Dataset]):\n    '''download data'''\n    from google.cloud import\
+          \ storage\n    import pandas as pd\n    import logging \n    import sys\n\
+          \n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n\n   \
+          \ # Downloaing the file from a google bucket \n    client = storage.Client(project=project_id)\n\
+          \    bucket = client.bucket(bucket)\n    blob = bucket.blob(file_name)\n\
+          \    blob.download_to_filename(dataset.path + \".csv\")\n    logging.info('Downloaded\
+          \ Data!')\n\n"
+        image: python:3.10.7-slim
+    exec-feature-selection:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - feature_selection
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef feature_selection(dataset: Input[Dataset], dataset_train_x: Output[Dataset],\
+          \ dataset_train_y: Output[Dataset], dataset_test_y: Output[Dataset], dataset_test_x:\
+          \ Output[Dataset]):\n    '''train_test_split'''\n    import pandas as pd\n\
+          \    import logging \n    import sys\n    from sklearn.model_selection import\
+          \ train_test_split\n    from sklearn.preprocessing import LabelEncoder\n\
+          \n    logging.basicConfig(stream=sys.stdout, level=logging.INFO) \n\n  \
+          \  complete_data = pd.read_csv(dataset.path+\".csv\", index_col=None)\n\n\
+          \    label_encoder = LabelEncoder()\n    for i in ['Geography', 'Gender']:\n\
+          \        complete_data[i]= label_encoder.fit_transform(complete_data[i])\n\
+          \n    X_Columns = ['CreditScore', 'Geography',\n       'Gender', 'Age',\
+          \ 'Tenure', 'Balance', 'NumOfProducts', 'HasCrCard',\n       'IsActiveMember',\
+          \ 'EstimatedSalary']\n    Y_columns= ['Exited']\n\n    X = complete_data.copy()[X_Columns]\n\
+          \    y = complete_data.copy()[Y_columns]\n\n    X_train, X_test, y_train,\
+          \ y_test = train_test_split(X, y, \n                                   \
+          \                 test_size=0.2,\n                                     \
+          \               stratify=y)\n\n    X_train.to_csv(dataset_train_x.path +\
+          \ \".csv\" , index=False, encoding='utf-8-sig')\n    y_train.to_csv(dataset_train_y.path\
+          \ + \".csv\" , index=False, encoding='utf-8-sig')\n    X_test.to_csv(dataset_test_x.path\
+          \ + \".csv\" , index=False, encoding='utf-8-sig')\n    y_test.to_csv(dataset_test_y.path\
+          \ + \".csv\" , index=False, encoding='utf-8-sig')\n\n"
+        image: python:3.10.7-slim
+    exec-get-git-password-user:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - get_git_password_user
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-secret-manager'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef get_git_password_user(project_id: str) -> str:  \n\n    from\
+          \ google.cloud import secretmanager\n    import logging \n    import sys\n\
+          \n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n    #\
+          \ ID of the secrets.\n    secret_id_user = \"Github_account_name\"\n   \
+          \ secret_id_pass = \"Github_access_token\"\n\n    # Create the Secret Manager\
+          \ client.\n    client = secretmanager.SecretManagerServiceClient()\n\n \
+          \   # Build the resource name of the secret version.\n    user_resource\
+          \ = f\"projects/{project_id}/secrets/{secret_id_user}/versions/1\"\n\n \
+          \   # Get the secret version.\n    user_response = client.access_secret_version(request={\"\
+          name\": user_resource})    \n   # Get the value of the secret\n    user_payload\
+          \ = user_response.payload.data.decode(\"UTF-8\")\n\n    # Build the resource\
+          \ name of the secret version.\n    pass_resource = f\"projects/{project_id}/secrets/{secret_id_pass}/versions/1\"\
+          \n    # Get the secret version.\n    pass_response = client.access_secret_version(request={\"\
+          name\": pass_resource})\n    pass_payload = pass_response.payload.data.decode(\"\
+          UTF-8\")\n\n    logging.info('Github credential retrieved!')\n    return\
+          \ user_payload + \":\" + pass_payload  # Never print or log this!    \n\n"
+        image: python:3.10.7-slim
+    exec-get-git-password-user-2:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - get_git_password_user
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-secret-manager'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef get_git_password_user(project_id: str) -> str:  \n\n    from\
+          \ google.cloud import secretmanager\n    import logging \n    import sys\n\
+          \n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n    #\
+          \ ID of the secrets.\n    secret_id_user = \"Github_account_name\"\n   \
+          \ secret_id_pass = \"Github_access_token\"\n\n    # Create the Secret Manager\
+          \ client.\n    client = secretmanager.SecretManagerServiceClient()\n\n \
+          \   # Build the resource name of the secret version.\n    user_resource\
+          \ = f\"projects/{project_id}/secrets/{secret_id_user}/versions/1\"\n\n \
+          \   # Get the secret version.\n    user_response = client.access_secret_version(request={\"\
+          name\": user_resource})    \n   # Get the value of the secret\n    user_payload\
+          \ = user_response.payload.data.decode(\"UTF-8\")\n\n    # Build the resource\
+          \ name of the secret version.\n    pass_resource = f\"projects/{project_id}/secrets/{secret_id_pass}/versions/1\"\
+          \n    # Get the secret version.\n    pass_response = client.access_secret_version(request={\"\
+          name\": pass_resource})\n    pass_payload = pass_response.payload.data.decode(\"\
+          UTF-8\")\n\n    logging.info('Github credential retrieved!')\n    return\
+          \ user_payload + \":\" + pass_payload  # Never print or log this!    \n\n"
+        image: python:3.10.7-slim
+    exec-get-git-password-user-3:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - get_git_password_user
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-secret-manager'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef get_git_password_user(project_id: str) -> str:  \n\n    from\
+          \ google.cloud import secretmanager\n    import logging \n    import sys\n\
+          \n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n    #\
+          \ ID of the secrets.\n    secret_id_user = \"Github_account_name\"\n   \
+          \ secret_id_pass = \"Github_access_token\"\n\n    # Create the Secret Manager\
+          \ client.\n    client = secretmanager.SecretManagerServiceClient()\n\n \
+          \   # Build the resource name of the secret version.\n    user_resource\
+          \ = f\"projects/{project_id}/secrets/{secret_id_user}/versions/1\"\n\n \
+          \   # Get the secret version.\n    user_response = client.access_secret_version(request={\"\
+          name\": user_resource})    \n   # Get the value of the secret\n    user_payload\
+          \ = user_response.payload.data.decode(\"UTF-8\")\n\n    # Build the resource\
+          \ name of the secret version.\n    pass_resource = f\"projects/{project_id}/secrets/{secret_id_pass}/versions/1\"\
+          \n    # Get the secret version.\n    pass_response = client.access_secret_version(request={\"\
+          name\": pass_resource})\n    pass_payload = pass_response.payload.data.decode(\"\
+          UTF-8\")\n\n    logging.info('Github credential retrieved!')\n    return\
+          \ user_payload + \":\" + pass_payload  # Never print or log this!    \n\n"
+        image: python:3.10.7-slim
+    exec-model-evaluation:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - model_evaluation
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn'\
+          \ 'numpy' && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef model_evaluation(test_set_x:  Input[Dataset], test_set_y:  Input[Dataset],\
+          \ \n                         model_rfc: Input[Model], model_lr: Input[Model],\
+          \ model_svc: Input[Model]) -> str:\n    import pandas as pd\n    import\
+          \ logging     \n    from sklearn.metrics import roc_curve, confusion_matrix,\
+          \ accuracy_score\n    import json\n    import pickle\n    from numpy import\
+          \ nan_to_num\n    from sklearn.metrics import accuracy_score\n\n    data_x\
+          \ = pd.read_csv(test_set_x.path+\".csv\")\n    data_y = pd.read_csv(test_set_y.path+\"\
+          .csv\")\n\n    #Loading the saved rfc model with joblib\n    m_filename\
+          \ = model_rfc.path + \".pkl\"\n    model_rfc_op = pickle.load(open(m_filename,\
+          \ 'rb'))\n\n    predictions_rfc = model_rfc_op.predict(data_x)\n    accuracy_rfc\
+          \ = accuracy_score(data_y, predictions_rfc)\n\n    #Loading the saved logistic\
+          \ model with joblib\n    m_filename = model_lr.path + \".pkl\"\n    model_logistic_op\
+          \ = pickle.load(open(m_filename, 'rb'))\n\n    predictions_logistic = model_logistic_op.predict(data_x)\n\
+          \    accuracy_logistic = accuracy_score(data_y, predictions_logistic)\n\n\
+          \    #Loading the saved SVC model with joblib\n    m_filename = model_svc.path\
+          \ + \".pkl\"\n    model_svc_op = pickle.load(open(m_filename, 'rb'))\n\n\
+          \    predictions_svc = model_svc_op.predict(data_x)\n    accuracy_svc =\
+          \ accuracy_score(data_y, predictions_svc)\n\n    #compare models\n    if\
+          \ accuracy_rfc > accuracy_logistic:\n        if accuracy_rfc >= accuracy_svc:\n\
+          \            return \"RFC\"\n        else:\n            return \"SVC\"\n\
+          \    else:\n        if accuracy_logistic >= accuracy_svc:\n            return\
+          \ \"Logistic\"\n        else:\n            return \"SVC\"\n\n"
+        image: python:3.10.7-slim
+    exec-train-logistic:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_logistic
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_logistic(features_x: Input[Dataset], features_y: Input[Dataset],\
+          \ out_model: Output[Model]):\n    '''train a MLP with default parameters'''\n\
+          \    import pandas as pd\n    import json\n    import logging\n    import\
+          \ sys\n    import os\n    import pickle\n    from sklearn.linear_model import\
+          \ LogisticRegression\n\n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n\
+          \n    df_x = pd.read_csv(features_x.path+\".csv\")\n    df_y = pd.read_csv(features_y.path+\"\
+          .csv\")\n\n    logging.info(df_x.columns)\n\n    # define model\n    model_logisitc\
+          \ = LogisticRegression()\n    # fit model\n    model_logisitc.fit(df_x[:],\
+          \ df_y['Exited'])\n\n    #save the model\n    out_model.metadata[\"framework\"\
+          ] = \"Logistic\"\n    file_name = out_model.path + f\".pkl\"\n    with open(file_name,\
+          \ 'wb') as file:\n        pickle.dump(model_logisitc, file)\n\n"
+        image: python:3.10.7-slim
+    exec-train-rfc:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_rfc
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_rfc(features_x: Input[Dataset], features_y: Input[Dataset],\
+          \ out_model: Output[Model]):\n    '''train a MLP with default parameters'''\n\
+          \    import pandas as pd\n    import json\n    import logging \n    import\
+          \ sys\n    import os\n    import pickle\n    from sklearn.ensemble import\
+          \ RandomForestClassifier\n\n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n\
+          \n    df_x = pd.read_csv(features_x.path+\".csv\")\n    df_y = pd.read_csv(features_y.path+\"\
+          .csv\")\n\n    logging.info(df_x.columns)\n\n    # define model\n    model_rfc\
+          \ = RandomForestClassifier()\n    # fit model\n    model_rfc.fit(df_x[:],\
+          \ df_y['Exited'])\n\n    #save the model\n    out_model.metadata[\"framework\"\
+          ] = \"RFC\"\n    file_name = out_model.path + f\".pkl\"\n    with open(file_name,\
+          \ 'wb') as file:  \n        pickle.dump(model_rfc, file)\n\n"
+        image: python:3.10.7-slim
+    exec-train-svm:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - train_svm
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'pandas' 'scikit-learn'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef train_svm(features_x: Input[Dataset], features_y: Input[Dataset],\
+          \ out_model: Output[Model]):\n    '''train a MLP with default parameters'''\n\
+          \    import pandas as pd\n    import json\n    import logging\n    import\
+          \ sys\n    import os\n    import pickle\n    from sklearn.svm import SVC\n\
+          \n    logging.basicConfig(stream=sys.stdout, level=logging.INFO)\n\n   \
+          \ df_x = pd.read_csv(features_x.path+\".csv\")\n    df_y = pd.read_csv(features_y.path+\"\
+          .csv\")\n\n    logging.info(df_x.columns)\n\n    # define model\n    model_SVC\
+          \ = SVC(class_weight='balanced',C= 1, gamma= 'auto', kernel= 'rbf')\n\n\
+          \    # fit model\n    model_SVC.fit(df_x[:], df_y['Exited'])\n\n    #save\
+          \ the model\n    out_model.metadata[\"framework\"] = \"SVC\"\n    file_name\
+          \ = out_model.path + f\".pkl\"\n    with open(file_name, 'wb') as file:\n\
+          \        pickle.dump(model_SVC, file)\n\n"
+        image: python:3.10.7-slim
+    exec-upload-model-to-gcs:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - upload_model_to_gcs
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-storage'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef upload_model_to_gcs(project_id: str, model_repo: str, model:\
+          \ Input[Model]):\n    '''upload model to gsc'''\n    from google.cloud import\
+          \ storage   \n    import logging \n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)    \n\n    # upload the model to GCS\n    client =\
+          \ storage.Client(project=project_id)\n    bucket = client.bucket(model_repo)\n\
+          \    blob = bucket.blob('model.pkl')\n    source_file_name= model.path +\
+          \ '.pkl'\n\n    blob.upload_from_filename(source_file_name)    \n\n    print(f\"\
+          File {source_file_name} uploaded to {model_repo}.\")\n\n"
+        image: python:3.10.7-slim
+    exec-upload-model-to-gcs-2:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - upload_model_to_gcs
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-storage'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef upload_model_to_gcs(project_id: str, model_repo: str, model:\
+          \ Input[Model]):\n    '''upload model to gsc'''\n    from google.cloud import\
+          \ storage   \n    import logging \n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)    \n\n    # upload the model to GCS\n    client =\
+          \ storage.Client(project=project_id)\n    bucket = client.bucket(model_repo)\n\
+          \    blob = bucket.blob('model.pkl')\n    source_file_name= model.path +\
+          \ '.pkl'\n\n    blob.upload_from_filename(source_file_name)    \n\n    print(f\"\
+          File {source_file_name} uploaded to {model_repo}.\")\n\n"
+        image: python:3.10.7-slim
+    exec-upload-model-to-gcs-3:
+      container:
+        args:
+        - --executor_input
+        - '{{$}}'
+        - --function_to_execute
+        - upload_model_to_gcs
+        command:
+        - sh
+        - -c
+        - "\nif ! [ -x \"$(command -v pip)\" ]; then\n    python3 -m ensurepip ||\
+          \ python3 -m ensurepip --user || apt-get install python3-pip\nfi\n\nPIP_DISABLE_PIP_VERSION_CHECK=1\
+          \ python3 -m pip install --quiet --no-warn-script-location 'kfp==2.3.0'\
+          \ '--no-deps' 'typing-extensions>=3.7.4,<5; python_version<\"3.9\"'  &&\
+          \  python3 -m pip install --quiet --no-warn-script-location 'google-cloud-storage'\
+          \ && \"$0\" \"$@\"\n"
+        - sh
+        - -ec
+        - 'program_path=$(mktemp -d)
+
+
+          printf "%s" "$0" > "$program_path/ephemeral_component.py"
+
+          _KFP_RUNTIME=true python3 -m kfp.dsl.executor_main                         --component_module_path                         "$program_path/ephemeral_component.py"                         "$@"
+
+          '
+        - "\nimport kfp\nfrom kfp import dsl\nfrom kfp.dsl import *\nfrom typing import\
+          \ *\n\ndef upload_model_to_gcs(project_id: str, model_repo: str, model:\
+          \ Input[Model]):\n    '''upload model to gsc'''\n    from google.cloud import\
+          \ storage   \n    import logging \n    import sys\n\n    logging.basicConfig(stream=sys.stdout,\
+          \ level=logging.INFO)    \n\n    # upload the model to GCS\n    client =\
+          \ storage.Client(project=project_id)\n    bucket = client.bucket(model_repo)\n\
+          \    blob = bucket.blob('model.pkl')\n    source_file_name= model.path +\
+          \ '.pkl'\n\n    blob.upload_from_filename(source_file_name)    \n\n    print(f\"\
+          File {source_file_name} uploaded to {model_repo}.\")\n\n"
+        image: python:3.10.7-slim
+pipelineInfo:
+  name: churn-predictor-training-pipeline
+root:
+  dag:
+    tasks:
+      condition-1:
+        componentRef:
+          name: comp-condition-1
+        dependentTasks:
+        - model-evaluation
+        - train-rfc
+        inputs:
+          artifacts:
+            pipelinechannel--train-rfc-out_model:
+              taskOutputArtifact:
+                outputArtifactKey: out_model
+                producerTask: train-rfc
+          parameters:
+            pipelinechannel--git_repo:
+              componentInputParameter: git_repo
+            pipelinechannel--model-evaluation-Output:
+              taskOutputParameter:
+                outputParameterKey: Output
+                producerTask: model-evaluation
+            pipelinechannel--model_repo:
+              componentInputParameter: model_repo
+            pipelinechannel--project_id:
+              componentInputParameter: project_id
+        taskInfo:
+          name: condition-1
+        triggerPolicy:
+          condition: inputs.parameter_values['pipelinechannel--model-evaluation-Output']
+            == 'RFC'
+      condition-2:
+        componentRef:
+          name: comp-condition-2
+        dependentTasks:
+        - model-evaluation
+        - train-logistic
+        inputs:
+          artifacts:
+            pipelinechannel--train-logistic-out_model:
+              taskOutputArtifact:
+                outputArtifactKey: out_model
+                producerTask: train-logistic
+          parameters:
+            pipelinechannel--git_repo:
+              componentInputParameter: git_repo
+            pipelinechannel--model-evaluation-Output:
+              taskOutputParameter:
+                outputParameterKey: Output
+                producerTask: model-evaluation
+            pipelinechannel--model_repo:
+              componentInputParameter: model_repo
+            pipelinechannel--project_id:
+              componentInputParameter: project_id
+        taskInfo:
+          name: condition-2
+        triggerPolicy:
+          condition: inputs.parameter_values['pipelinechannel--model-evaluation-Output']
+            == 'Logistic'
+      condition-3:
+        componentRef:
+          name: comp-condition-3
+        dependentTasks:
+        - model-evaluation
+        - train-svm
+        inputs:
+          artifacts:
+            pipelinechannel--train-svm-out_model:
+              taskOutputArtifact:
+                outputArtifactKey: out_model
+                producerTask: train-svm
+          parameters:
+            pipelinechannel--git_repo:
+              componentInputParameter: git_repo
+            pipelinechannel--model-evaluation-Output:
+              taskOutputParameter:
+                outputParameterKey: Output
+                producerTask: model-evaluation
+            pipelinechannel--model_repo:
+              componentInputParameter: model_repo
+            pipelinechannel--project_id:
+              componentInputParameter: project_id
+        taskInfo:
+          name: condition-3
+        triggerPolicy:
+          condition: inputs.parameter_values['pipelinechannel--model-evaluation-Output']
+            == 'SVC'
+      download-data:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-download-data
+        inputs:
+          parameters:
+            bucket:
+              componentInputParameter: data_bucket
+            file_name:
+              componentInputParameter: file_name
+            project_id:
+              componentInputParameter: project_id
+        taskInfo:
+          name: download-data
+      feature-selection:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-feature-selection
+        dependentTasks:
+        - download-data
+        inputs:
+          artifacts:
+            dataset:
+              taskOutputArtifact:
+                outputArtifactKey: dataset
+                producerTask: download-data
+        taskInfo:
+          name: feature-selection
+      model-evaluation:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-model-evaluation
+        dependentTasks:
+        - feature-selection
+        - train-logistic
+        - train-rfc
+        - train-svm
+        inputs:
+          artifacts:
+            model_lr:
+              taskOutputArtifact:
+                outputArtifactKey: out_model
+                producerTask: train-logistic
+            model_rfc:
+              taskOutputArtifact:
+                outputArtifactKey: out_model
+                producerTask: train-rfc
+            model_svc:
+              taskOutputArtifact:
+                outputArtifactKey: out_model
+                producerTask: train-svm
+            test_set_x:
+              taskOutputArtifact:
+                outputArtifactKey: dataset_test_x
+                producerTask: feature-selection
+            test_set_y:
+              taskOutputArtifact:
+                outputArtifactKey: dataset_test_y
+                producerTask: feature-selection
+        taskInfo:
+          name: model-evaluation
+      train-logistic:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-train-logistic
+        dependentTasks:
+        - feature-selection
+        inputs:
+          artifacts:
+            features_x:
+              taskOutputArtifact:
+                outputArtifactKey: dataset_train_x
+                producerTask: feature-selection
+            features_y:
+              taskOutputArtifact:
+                outputArtifactKey: dataset_train_y
+                producerTask: feature-selection
+        taskInfo:
+          name: train-logistic
+      train-rfc:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-train-rfc
+        dependentTasks:
+        - feature-selection
+        inputs:
+          artifacts:
+            features_x:
+              taskOutputArtifact:
+                outputArtifactKey: dataset_train_x
+                producerTask: feature-selection
+            features_y:
+              taskOutputArtifact:
+                outputArtifactKey: dataset_train_y
+                producerTask: feature-selection
+        taskInfo:
+          name: train-rfc
+      train-svm:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-train-svm
+        dependentTasks:
+        - feature-selection
+        inputs:
+          artifacts:
+            features_x:
+              taskOutputArtifact:
+                outputArtifactKey: dataset_train_x
+                producerTask: feature-selection
+            features_y:
+              taskOutputArtifact:
+                outputArtifactKey: dataset_train_y
+                producerTask: feature-selection
+        taskInfo:
+          name: train-svm
+  inputDefinitions:
+    parameters:
+      data_bucket:
+        parameterType: STRING
+      dataset_uri:
+        parameterType: STRING
+      file_name:
+        parameterType: STRING
+      git_repo:
+        parameterType: STRING
+      model_repo:
+        parameterType: STRING
+      model_repo_uri:
+        parameterType: STRING
+      project_id:
+        parameterType: STRING
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.3.0

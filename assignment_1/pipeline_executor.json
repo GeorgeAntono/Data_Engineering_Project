@@ -1,0 +1,37 @@
+{
+ "steps": [
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "build",
+        "-t",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/pipeline-executor:0.0.1",
+        "./pipeline_executor"
+      ]
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "push",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/pipeline-executor:0.0.1"
+      ]
+    },
+  {
+       "name": "gcr.io/cloud-builders/gsutil",
+       "args": [
+           "cp",
+		   "gs://data_degroup11/parameters.json",
+           "."
+        ]
+   },
+   {
+       "name": "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/pipeline-executor:0.0.1",
+       "args": [
+           "--name=churn-predictor",
+		   "--pipeline_def=./ML_pipeline/churn_predictor_training_pipeline.yaml",
+           "--pipeline_root=gs://temp_degroup11",
+		   "--parameter_dict=./parameters.json"
+        ]
+   }
+   ]
+}

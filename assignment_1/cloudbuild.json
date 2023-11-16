@@ -1,0 +1,125 @@
+{
+  "steps": [
+    {
+      "name": "gcr.io/cloud-builders/gsutil",
+      "args": [
+        "cp",
+        "gs://models_degroup11/model.pkl",
+        "./prediction_api/model.pkl"
+      ]
+    },
+    {
+      "name": "python:3.10.8-slim-buster",
+      "entrypoint": "/bin/sh",
+      "args": [
+        "-c",
+        "cd ./prediction_api && cp model.pkl ./testResources && python -m venv .myenv && . .myenv/bin/activate && python -m pip install --upgrade pip && python -m pip install -r requirements_dev.txt && python -m pytest --junitxml=${SHORT_SHA}_test_log.xml ./tests"
+      ]
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "build",
+        "-t",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction_api:0.0.1",
+        "./prediction_api/"
+      ]
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "build",
+        "-t",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction_ui:0.0.1",
+        "./prediction_ui"
+      ]
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "push",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction_api:0.0.1"
+      ]
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": [
+        "push",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction_ui:0.0.1"
+      ]
+    },
+    {
+      "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+      "args": [
+        "run",
+        "deploy",
+        "prediction-api",
+        "--image",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/prediction_api:0.0.1",
+        "--region",
+        "us-central1",
+        "--platform",
+        "managed",
+        "--port",
+        "5000",
+        "--cpu",
+        "2",
+        "--memory",
+        "4G",
+        "--allow-unauthenticated"
+      ],
+      "id": "prediction-api-deploy",
+      "entrypoint": "gcloud"
+    },
+    {
+      "name": "ubuntu",
+      "args": [
+        "sleep",
+        "60"
+      ],
+      "id": "sleep-delay",
+      "waitFor": [
+        "prediction-api-deploy"
+      ]
+    },
+    {
+      "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+      "args": [
+        "-c",
+        "gcloud run services list --platform managed | grep  https: | head -1 | awk '{print $4}' > /workspace/api_url.text"
+      ],
+      "id": "api-url-extraction",
+      "waitFor": [
+        "sleep-delay"
+      ],
+      "entrypoint": "/bin/sh"
+    },
+    {
+      "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+      "args": [
+        "-c",
+        "gcloud run deploy prediction-ui --image us-central1-docker.pkg.dev/degroup11/grouprepo/prediction_ui:0.0.1 --set-env-vars PREDICTOR_API=$(cat /workspace/api_url.text)/churn_predictor/ --region us-central1 --platform managed --port 5000 --cpu 2 --memory 4G --allow-unauthenticated"
+      ],
+      "waitFor": [
+        "api-url-extraction"
+      ],
+      "entrypoint": "/bin/sh"
+    }
+  ],
+  "artifacts": {
+    "objects": {
+      "location": "gs://temp_degroup11/",
+      "paths": [
+        "/workspace/api_url.text"
+      ]
+    }
+  },
+  "artifacts": {
+      "objects": {
+        "location": "gs://temp_degroup11/",
+        "paths": [
+            "/workspace/prediction_api/${SHORT_SHA}_test_log.xml"
+        ]
+      }
+    }
+}
