@@ -3,7 +3,7 @@
     {
       "name": "gcr.io/cloud-builders/docker",
       "args": ["build", "-t", "gcr.io/your-project/hadoop-builder:latest", "."],
-      "dir": "assignment_2/csv_refactor/dockerfile"
+      "dir": "assignment_2/csv_refactor"
     },
     {
       "name": "gcr.io/cloud-builders/docker",
