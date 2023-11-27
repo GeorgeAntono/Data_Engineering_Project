@@ -1,7 +1,19 @@
 {
   "steps": [
     {
-      "name": "gcr.io/cloud-builders/hadoop",
+      "name": "gcr.io/cloud-builders/docker",
+      "args": ["build",
+        "-t",
+        "gcr.io/degroup11/hadoop-builder:latest",
+        "."],
+      "dir": "./csv_refactor"
+    },
+    {
+      "name": "gcr.io/cloud-builders/docker",
+      "args": ["push", "gcr.io/degroup11/hadoop-builder:latest"]
+    },
+    {
+      "name": "gcr.io/your-project/hadoop-builder",
       "entrypoint": "bash",
       "args": [
         "-c",
@@ -9,7 +21,7 @@
       ]
     },
     {
-      "name": "gcr.io/cloud-builders/hadoop",
+      "name": "gcr.io/your-project/hadoop-builder",
       "entrypoint": "bash",
       "args": [
         "-c",
@@ -25,8 +37,5 @@
       "args": ["cp", "/workspace/spouse_updated_test.csv", "gs://data_degroup11/spouse_updated_test.csv"]
     }
   ],
-  "images": [
-    "gcr.io/cloud-builders/hadoop:2.10.1",
-    "gcr.io/cloud-builders/gsutil:latest"
-  ]
+  "images": ["gcr.io/degroup11/hadoop-builder:latest"]
 }
