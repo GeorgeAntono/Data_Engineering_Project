@@ -2,22 +2,19 @@
   "steps": [
     {
       "name": "gcr.io/cloud-builders/docker",
-      "args": ["build",
-        "-t",
-        "gcr.io/degroup11/hadoop-builder:latest",
-        "."],
-      "dir": "assignment_2/csv_refactor/"
+      "args": ["build", "-t", "gcr.io/your-project/hadoop-builder:latest", "."],
+      "dir": "assignment_2/csv_refactor/dockerfile"
     },
     {
       "name": "gcr.io/cloud-builders/docker",
-      "args": ["push", "gcr.io/degroup11/hadoop-builder:latest"]
+      "args": ["push", "gcr.io/your-project/hadoop-builder:latest"]
     },
     {
       "name": "gcr.io/degroup11/hadoop-builder",
       "entrypoint": "bash",
       "args": [
         "-c",
-        "hadoop fs -getmerge gs://data_degroup11/individuals_updated_test/ /workspace/individuals_updated_test.csv"
+        "hadoop fs -copyToLocal gs://data_degroup11/individuals_updated_test /tmp/individuals_updated_test"
       ]
     },
     {
@@ -25,7 +22,23 @@
       "entrypoint": "bash",
       "args": [
         "-c",
-        "hadoop fs -getmerge gs://data_degroup11/spouse_updated_test/ /workspace/spouse_updated_test.csv"
+        "hadoop fs -copyToLocal gs://data_degroup11/spouse_updated_test /tmp/spouse_updated_test"
+      ]
+    },
+    {
+      "name": "gcr.io/degroup11/hadoop-builder",
+      "entrypoint": "bash",
+      "args": [
+        "-c",
+        "hadoop fs -getmerge /tmp/individuals_updated_test /workspace/individuals_updated_test.csv"
+      ]
+    },
+    {
+      "name": "gcr.io/degroup11/hadoop-builder",
+      "entrypoint": "bash",
+      "args": [
+        "-c",
+        "hadoop fs -getmerge /tmp/spouse_updated_test /workspace/spouse_updated_test.csv"
       ]
     },
     {
@@ -37,5 +50,5 @@
       "args": ["cp", "/workspace/spouse_updated_test.csv", "gs://data_degroup11/spouse_updated_test.csv"]
     }
   ],
-  "images": ["gcr.io/degroup11/hadoop-builder:latest"]
+  "images": ["gcr.io/your-project/hadoop-builder:latest"]
 }
