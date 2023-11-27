@@ -9,7 +9,7 @@
     },
     {
       "name": "gcr.io/cloud-builders/docker",
-      "args": ["push", "gcr.io/your-project/hadoop-builder:latest"]
+      "args": ["push", "gcr.io/degroup11/hadoop-builder:latest"]
     },
     {
       "name": "gcr.io/degroup11/hadoop-builder",
