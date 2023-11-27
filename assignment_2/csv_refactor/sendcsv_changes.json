@@ -6,7 +6,7 @@
         "-t",
         "gcr.io/degroup11/hadoop-builder:latest",
         "."],
-      "dir": "."
+      "dir": "assignment_2/csv_refactor/"
     },
     {
       "name": "gcr.io/cloud-builders/docker",
