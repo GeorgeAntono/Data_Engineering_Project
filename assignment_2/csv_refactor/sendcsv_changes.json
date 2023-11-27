@@ -13,7 +13,7 @@
       "args": ["push", "gcr.io/degroup11/hadoop-builder:latest"]
     },
     {
-      "name": "gcr.io/your-project/hadoop-builder",
+      "name": "gcr.io/degroup11/hadoop-builder",
       "entrypoint": "bash",
       "args": [
         "-c",
@@ -21,7 +21,7 @@
       ]
     },
     {
-      "name": "gcr.io/your-project/hadoop-builder",
+      "name": "gcr.io/degroup11/hadoop-builder",
       "entrypoint": "bash",
       "args": [
         "-c",
