@@ -19,7 +19,6 @@ volumes:
 services:
 web:
     env_file:
-      - .env
       - .env.lars
   spark-driver-app:
     build:
