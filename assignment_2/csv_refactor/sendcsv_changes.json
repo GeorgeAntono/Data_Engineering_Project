@@ -2,9 +2,7 @@
   "steps": [
     {
       "name": "gcr.io/cloud-builders/docker",
-      "args": ["build",
-        "-t",
-        "gcr.io/degroup11/hadoop-builder:latest", "."],
+      "args": ["build", "-t", "gcr.io/degroup11/hadoop-builder:latest", "."],
       "dir": "assignment_2/csv_refactor"
     },
     {
@@ -16,7 +14,7 @@
       "entrypoint": "bash",
       "args": [
         "-c",
-        "hadoop fs -copyToLocal gs://data_degroup11/individuals_updated_test /tmp/individuals_updated_test"
+        "gsutil -m cp gs://data_degroup11/individuals_updated_test/* /tmp/individuals_updated_test/"
       ]
     },
     {
@@ -24,7 +22,7 @@
       "entrypoint": "bash",
       "args": [
         "-c",
-        "hadoop fs -copyToLocal gs://data_degroup11/spouse_updated_test /tmp/spouse_updated_test"
+        "gsutil -m cp gs://data_degroup11/spouse_updated_test/* /tmp/spouse_updated_test/"
       ]
     },
     {
@@ -32,7 +30,7 @@
       "entrypoint": "bash",
       "args": [
         "-c",
-        "hadoop fs -getmerge /tmp/individuals_updated_test /workspace/individuals_updated_test.csv"
+        "hadoop fs -copyToLocal /tmp/individuals_updated_test /workspace/individuals_updated_test"
       ]
     },
     {
@@ -40,17 +38,17 @@
       "entrypoint": "bash",
       "args": [
         "-c",
-        "hadoop fs -getmerge /tmp/spouse_updated_test /workspace/spouse_updated_test.csv"
+        "hadoop fs -copyToLocal /tmp/spouse_updated_test /workspace/spouse_updated_test"
       ]
     },
     {
       "name": "gcr.io/cloud-builders/gsutil",
-      "args": ["cp", "/workspace/individuals_updated_test.csv", "gs://data_degroup11/individuals_updated_test.csv"]
+      "args": ["cp", "/workspace/individuals_updated_test/*.csv", "gs://data_degroup11/individuals_updated_test.csv"]
     },
     {
       "name": "gcr.io/cloud-builders/gsutil",
-      "args": ["cp", "/workspace/spouse_updated_test.csv", "gs://data_degroup11/spouse_updated_test.csv"]
+      "args": ["cp", "/workspace/spouse_updated_test/*.csv", "gs://data_degroup11/spouse_updated_test.csv"]
     }
   ],
-  "images": ["gcr.io/your-project/hadoop-builder:latest"]
+  "images": ["gcr.io/degroup11/hadoop-builder:latest"]
 }
