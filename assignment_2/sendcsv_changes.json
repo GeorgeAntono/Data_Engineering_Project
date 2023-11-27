@@ -5,7 +5,7 @@
       "entrypoint": "bash",
       "args": [
         "-c",
-        "hadoop fs -getmerge gs://temp_degroup11/individuals_updated_test/ /workspace/individuals_updated_test.csv"
+        "hadoop fs -getmerge gs://data_degroup11/individuals_updated_test/ /workspace/individuals_updated_test.csv"
       ]
     },
     {
@@ -13,7 +13,7 @@
       "entrypoint": "bash",
       "args": [
         "-c",
-        "hadoop fs -getmerge gs://temp_degroup11/spouse_updated_test/ /workspace/spouse_updated_test.csv"
+        "hadoop fs -getmerge gs://data_degroup11/spouse_updated_test/ /workspace/spouse_updated_test.csv"
       ]
     },
     {
@@ -24,5 +24,9 @@
       "name": "gcr.io/cloud-builders/gsutil",
       "args": ["cp", "/workspace/spouse_updated_test.csv", "gs://data_degroup11/spouse_updated_test.csv"]
     }
+  ],
+  "images": [
+    "gcr.io/cloud-builders/hadoop:2.10.1",
+    "gcr.io/cloud-builders/gsutil:latest"
   ]
 }
