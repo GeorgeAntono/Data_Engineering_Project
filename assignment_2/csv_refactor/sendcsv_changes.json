@@ -14,7 +14,7 @@
       "entrypoint": "bash",
       "args": [
         "-c",
-        "gcloud auth configure-docker && gsutil -m cp gs://data_degroup11/individuals_updated_test/* /tmp/individuals_updated_test/"
+        "gcloud auth configure-docker && gsutil -m cp gs://data_degroup11/individuals_updated_test.csv/* /tmp/individuals_updated_test/"
       ]
     },
     {
@@ -30,7 +30,7 @@
       "entrypoint": "bash",
       "args": [
         "-c",
-        "gcloud auth configure-docker && gsutil -m cp gs://data_degroup11/spouse_updated_test/* /tmp/spouse_updated_test/"
+        "gcloud auth configure-docker && gsutil -m cp gs://data_degroup11/spouse_updated_test.csv/* /tmp/spouse_updated_test/"
       ]
     },
     {
