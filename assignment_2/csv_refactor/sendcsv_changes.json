@@ -10,19 +10,11 @@
       "args": ["push", "gcr.io/degroup11/hadoop-builder:latest"]
     },
     {
-      "name": "gcr.io/degroup11/hadoop-builder",
+      "name": "gcr.io/cloud-builders/gcloud",
       "entrypoint": "bash",
       "args": [
         "-c",
-        "gsutil -m cp gs://data_degroup11/individuals_updated_test/* /tmp/individuals_updated_test/"
-      ]
-    },
-    {
-      "name": "gcr.io/degroup11/hadoop-builder",
-      "entrypoint": "bash",
-      "args": [
-        "-c",
-        "gsutil -m cp gs://data_degroup11/spouse_updated_test/* /tmp/spouse_updated_test/"
+        "gcloud auth configure-docker && gsutil -m cp gs://data_degroup11/individuals_updated_test/* /tmp/individuals_updated_test/"
       ]
     },
     {
@@ -31,6 +23,14 @@
       "args": [
         "-c",
         "hadoop fs -copyToLocal /tmp/individuals_updated_test /workspace/individuals_updated_test"
+      ]
+    },
+    {
+      "name": "gcr.io/cloud-builders/gcloud",
+      "entrypoint": "bash",
+      "args": [
+        "-c",
+        "gcloud auth configure-docker && gsutil -m cp gs://data_degroup11/spouse_updated_test/* /tmp/spouse_updated_test/"
       ]
     },
     {
