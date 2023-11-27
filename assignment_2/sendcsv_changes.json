@@ -1,28 +1,28 @@
 {
   "steps": [
     {
-      "name": "gcr.io/cloud-builders/gsutil",
+      "name": "gcr.io/cloud-builders/hadoop",
+      "entrypoint": "bash",
       "args": [
-        "cp",
-        "gs://data_group11/individuals_updated2.csv",
-        "./data/individuals_updated2.csv"
+        "-c",
+        "hadoop fs -getmerge gs://temp_degroup11/individuals_updated_test/ /workspace/individuals_updated_test.csv"
+      ]
+    },
+    {
+      "name": "gcr.io/cloud-builders/hadoop",
+      "entrypoint": "bash",
+      "args": [
+        "-c",
+        "hadoop fs -getmerge gs://temp_degroup11/spouse_updated_test/ /workspace/spouse_updated_test.csv"
       ]
     },
     {
       "name": "gcr.io/cloud-builders/gsutil",
-      "args": [
-        "cp",
-        "gs://data_group11/spouse_updated2.csv",
-        "./data/spouse_updated2.csv"
-      ]
+      "args": ["cp", "/workspace/individuals_updated_test.csv", "gs://data_degroup11/individuals_updated_test.csv"]
     },
     {
       "name": "gcr.io/cloud-builders/gsutil",
-      "args": [
-        "cp",
-        "gs://data_group11/house_pricing_updated2.csv",
-        "./data/house_pricing_updated2.csv"
-      ]
+      "args": ["cp", "/workspace/spouse_updated_test.csv", "gs://data_degroup11/spouse_updated_test.csv"]
     }
   ]
 }
