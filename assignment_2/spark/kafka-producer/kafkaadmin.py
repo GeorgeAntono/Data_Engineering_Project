@@ -11,8 +11,9 @@ def create_topics(admin, topic_list):
 
 
 if __name__ == '__main__':
-    admin_client = KafkaAdminClient(bootstrap_servers="35.225.176.195:9092",
+    admin_client = KafkaAdminClient(bootstrap_servers="34.71.12.54:9092",
                                     client_id='spark')  # use your VM's external IP Here!
     topic_list = [NewTopic(name="mock", num_partitions=1, replication_factor=1),
                   NewTopic(name="mock_2", num_partitions=1, replication_factor=1)]
     create_topics(admin_client, topic_list)
+    #delete_topics(admin_client)

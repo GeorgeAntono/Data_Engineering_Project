@@ -44,9 +44,9 @@ def configure_logger():
 
 class KafkaMessageConsumer(Thread):
 
-    def __init__(self, topic):
+    def __init__(self, topic):+
         Thread.__init__(self)
-        self.consumer = KafkaConsumer(bootstrap_servers='35.225.176.195:9092',  # use your VM's external IP Here!
+        self.consumer = KafkaConsumer(bootstrap_servers='34.71.12.54:9092',  # use your VM's external IP Here!
                                       auto_offset_reset='earliest',
                                       consumer_timeout_ms=10000)
 
