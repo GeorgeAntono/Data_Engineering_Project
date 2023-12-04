@@ -46,7 +46,7 @@ class KafkaMessageConsumer(Thread):
 
     def __init__(self, topic):
         Thread.__init__(self)
-        self.consumer = KafkaConsumer(bootstrap_servers='104.154.64.59:9092',  # use your VM's external IP Here!
+        self.consumer = KafkaConsumer(bootstrap_servers='35.239.159.187:9092',  # use your VM's external IP Here!
                                       auto_offset_reset='earliest',
                                       consumer_timeout_ms=10000)
 
@@ -65,7 +65,7 @@ class KafkaMessageConsumer(Thread):
 if __name__ == '__main__':
     configure_logger()
     c1 = KafkaMessageConsumer('mock')
-    c2 = KafkaMessageConsumer('mock_2')
+    c2 = KafkaMessageConsumer('mock')
     c1.start()
     c2.start()
     c1.join()
